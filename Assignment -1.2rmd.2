@@ -12,11 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 #Data Wrangling
 
 Install.packages("skimr")
-Install.packages("janitor")
 ```{r}
 library(tidyverse)
 library(skimr)
-library(janitor)
 ```
 Libraries loaded
 ```{r}
@@ -76,21 +74,19 @@ Add new variable to data set max_total_fat to calculate the maximum total fat
 max_total_fat<-fastfood%>%
   group_by(restaurant)%>%
   mutate(max_total_fat=max(total_fat))%>%
-  select(restaurant, max_total_fat)%>%
   ungroup()
 ```
 
-
 max_total_fat variable created, adding to initial data set the max total fat per restaurant
-
 ```{r}
 fastfood%>%
-  filter(restaurant=="Mcdonalds")%>%
+  group_by(restaurant)%>%
+  filter(restaurant=="mcdonalds")%>%
   ggplot(
-    aes(x=restaurant, y=sugar))+
-  
-  geom_point(colour="blue")
+    aes(x=sugar,
+        y=protein,
+        colour=restaurant)
+  )+
+  geom_point()
 ```
-
-
 
