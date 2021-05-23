@@ -1,0 +1,31 @@
+---
+title: "Assignment 1.1"
+author: "Lhavanya Thananchayan-4625955"
+date: "5/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown editing
+
+
+*R Markdown* is a **file** form for making effective documents with R. Its a simple formatting syntax for authorising HTML,PDF and MS word documents to present the data insights and communicate them to stakeholders.
+
+[links](https://rmarkdown.rstudio.com/lesson-8.html)
+```{r}
+library(tidyverse)
+fast_food<-read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
+```
+```{r}
+fast_food%>%head(10)
+
+fast_food%>%filter(calories>1000)
+`dont_eat_this`<-fast_food%>%filter(total_fat>=40 & total_carb>=80)
+
+```
+
+
+
