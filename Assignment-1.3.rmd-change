@@ -15,7 +15,7 @@ library(tidyverse)
 library(skimr)
 ```
 ```{r}
-fastfood<-read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
+fastfood <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
 ```
 
 #Working with different data types
@@ -45,11 +45,11 @@ fastfood <- fastfood %>%
   mutate(calories_type = cut_number(calories, 3, labels = c("low", "med", "high")))
 ```
 
-
 ```{r}
 fastfood <- fastfood[order(fastfood$calories_type),]
 head(fastfood)
 ```
+
 
 # Adding facet wrap
 ```{r}
@@ -60,9 +60,17 @@ fastfood %>%
   ))+
   geom_bar(width=0.75)+
   facet_wrap(~ restaurant)+
-  coord_flip()+
-  theme_minimal()+
-  scale_fill_manual(values=c("#FFEF77","#FFAC25","#F85720"))
+  coord_flip()
+
+  
   
 ```
+#adding labels
+```{r}
+fastfood %>%
+  mutate(trans_fat = factor(total_fat,levels, levels = trans_fat_percent)) %>%
+  count(fastfood, total_fat, calories )
+```
+
+
 
