@@ -18,11 +18,17 @@ library(skimr)
 fastfood <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
 ```
 
+2. Using `skimr` package provide a list of variables which types needs to be changed 
+Use R function to identify the types of variables. What changes do you need to do to correctly record the types of variables? 
+Does all variables have sufficient range (=variability) to be included? Which variable can be removed?
+
 #Working with different data types
 
 ```{r}
 skim(fastfood)
 ```
+
+3. Identify variable(s) which should be factors and transform their type into a factor variable
 
 # We need to convert our variables
 ```{r}
@@ -32,25 +38,35 @@ fastfood$item<-as_factor(fastfood$item)
 fastfood$salad<-as_factor(fastfood$salad)
 skim(fastfood)
 ```
+
+
+4. Replace NA in the dataset with 0 across all variables
+
 ```{r}
 fastfood <- fastfood %>% replace(is.na(.), 0)
 ```
 
-Create two new variables:
 
-Read about `cut_number()` function using to assist and add a new variable to the dataset `calories_type` arguments to add labels `c("low", "med", "high")` and make the dataset ordered
+5. Create two new variables:
+Read about `cut_number()` function using Help and add a new variable to the dataset `calories_type`. Use the function arguments to add labels `c("low", "med", "high")` and make the dataset ordered. Do not forget to save the updated dataset. 
+
+#Create two new variables:
+
 
 ```{r}
 fastfood <- fastfood %>%
-  mutate(calories_type = cut_number(calories, 3, labels = c("low", "med", "high")))
+  mutate(calories_type=cut_number(calories,3,labels=c("low", "med", "high"),ordered_result=TRUE))
+  
 ```
+
+
 
 ```{r}
 fastfood <- fastfood[order(fastfood$calories_type),]
 head(fastfood)
 ```
 
-
+#6
 # Adding facet wrap
 ```{r}
 fastfood %>%
@@ -65,12 +81,55 @@ fastfood %>%
   
   
 ```
-#adding labels
+
+
+#7. The second variable should show the percentage of `trans_fat` in `total_fat`. Add the variable to the dataset and call it `trans_fat_percent`. Do not forget to save the updated dataset. 
+
+
+#trans_fat_percent
 ```{r}
-fastfood %>%
-  mutate(trans_fat = factor(total_fat,levels, levels = trans_fat_percent)) %>%
-  count(fastfood, total_fat, calories )
+fastfood<-fastfood%>%
+  mutate(total_fat=sum(trans_fat),percent=trans_fat/total_fat,answer_integer=as.integer(restaurant),average=sum(answer_integer=percent))%>%
+  ungroup()
 ```
 
 
+#8. Create a dataviz that shows the distribution of `trans_fat` in food items for each type of restaurant. Think carefully about the choice of data viz. Use facets, coordinates and theme layers to make your data viz visually appealing and meaningful.
+
+# Starting to visualise
+
+# Adding facet wrap
+```{r}
+fastfood%>%
+  ggplot(aes(
+    x = trans_fat,
+    fill = restaurant
+  ))+
+  geom_bar(width=0.75)+
+  facet_wrap(~ restaurant)+
+  coord_cartesian()+
+  theme_minimal()
+  
+  
+```
+#9. Calculate the average (mean) total_fat for each type of restaurant. No need to save it as a variable.
+
+```{r}
+fastfood%>%
+  group_by(restaurant)%>%
+  summarise(average_total_fat=mean(total_fat))%>%
+  ungroup()
+```
+#10 create a dataviz that allow to compare different restaurants on this. You can present it on one dataviz (= no facets). Think carefully about the choice of data viz. Use coordinates and theme layers to make your data viz visually appealing and meaningful. 
+
+```{r}
+fastfood%>%
+  group_by(restaurant)%>%
+  summarise(mean_total_fat=mean(total_fat))%>%
+  ggplot(aes(restaurant,mean_total_fat, fill=restaurant))+
+  geom_col()+
+  coord_cartesian(ylim=c(0,40))+
+  theme_light()+
+  labs(title="compare mean total fat per restaurant")
+```
 
